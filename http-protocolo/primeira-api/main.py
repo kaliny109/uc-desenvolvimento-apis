@@ -1,25 +1,48 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional
 
-app = FastAPI(
-    title="Minha Primeira API",
-    description="Criada no SENAI por: kaliny com FastAPI",
-    version="1.0.0"
-)
-#GET /sobre informaçoes sobre a API
-@app.get('/sobre')
-def raiz():
-    return {
-        "api": "Minha Primeira API", 
-        "versão": "1.0.0",
-        "framework": "FastAPI",
-        "linguagem": "Python 3",
-        "escola": "SENAI"
-    }
-    
-@app.get('/saudacao/{nome}')
-def saudar(nome: str):
-    return {
-    "mensagem": f"Olá, {nome}! Seja bem-vindo à minha API!",
-    "nome_recebido": nome
-    }
-    
+app = FastAPI (title='API de Produtos', version='1.0.0')
+
+# Banco de dados em memoria (lista Python)
+# Em produção: usariamos SQlite, PostgreSQL, etc...
+produtos = [
+    {"id": 1, "nome": "Notebook", "preco": 3499.99, "estoque": 10},
+    {"id": 2, "nome": "Mouse", "preco": 90.00, "estoque": 50},
+    {"id": 3, "nome": "Teclado", "preco": 120.00, "estoque": 30}
+]
+proximo_id = 4
+
+class ProdutoCreate(BaseModel):
+    nome: str
+    preco: float
+    estoque: int = 0
+
+@app.get('/produtos')    
+def listar_produtos():
+    return produtos
+
+@app.get('/produtos/{produto_id}')
+def buscar_produto(produto_id: int):
+    produto = next(
+        (p for p in produtos if p[id] == produto_id),
+        None
+    )
+    if produto is None:
+      return {"erro": f"Produto {produto_id} não encontrado"}
+    return produto   
+
+@app.post('/produtos', status_code=201)
+def criar_produto(produto: ProdutoCreate):
+    global proximo_id
+
+    novo_produto = {
+        'id': proximo_id,
+        'nome': produto.nome,
+        'preco': produto.preco,
+        'estoque': produto.estoque,
+    } 
+    produtos.append(novo_produto)
+    proximo_id += 1
+
+    return novo_produto
