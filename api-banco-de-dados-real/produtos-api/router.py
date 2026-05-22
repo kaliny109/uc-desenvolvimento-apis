@@ -55,7 +55,7 @@ def atualizar_produto(produto_id: int, dados: ProdutoPatch, db: Session = Depend
     db.refresh(produto)
     return produto
 
-@router.delete('/{produto_id}', status_code=204)
+@router.delete('/{alun_id}', status_code=204)
 def deletar_produto(produto_id: int, db: Session = Depends(get_db)):
     produto = db.query(Produto).filter(Produto.id == produto_id).first()
     if not produto or not produto.ativo:

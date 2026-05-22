@@ -1,16 +1,16 @@
 from fastapi import FastAPI
-from database import engine, base
-from router import router as produto_router
+from database import engine, Base
+from router import router as livros_router
 
-base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="API de Produtos",
+    title="API de Livros",
     description="CRUD com FastAPI e SQLAlchemy",
     version="2.0.0"
 )
 
-app.include_router(produto_router)
+app.include_router(livros_router)
 
 @app.get('/')
 def raiz():

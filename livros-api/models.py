@@ -1,17 +1,18 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime
 from sqlalchemy.sql import func
-from .database import Base
+from database import Base
 
-class Produto(Base):
-    __tablename__ = 'produtos'
+class Livro(Base):
+    __tablename__ = 'livros'
 
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String(100), nullable=False)
-    preco = Column(Float, nullable=False)
-    estoque = Column(Integer, nullable=False)
+    titulo = Column(String(100), nullable=False)
+    autor = Column(String(100), nullable=False)
+    ano_publicacao = Column(Integer, nullable=False)
     ativo = Column(Boolean, default=True)
     criado_em = Column(DateTime(timezone=True), 
                        server_default=func.now())
     
     def __repr__(self):
-        return f'<Produto id={self.id} nome={self.nome}>'
+        return f'<Livro id={self.id} nome={self.nome}>'
